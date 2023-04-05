@@ -46,6 +46,8 @@ services:
     image: postgres:latest
     networks:
       - api
+    volumes:
+      - './Docker/db/volumes/data:/var/lib/postgresql/data'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
@@ -62,3 +64,22 @@ services:
     restart: always
     networks:
       - api
+
+    # Сервис для разворачивания контейнера с автотестами
+  tests:
+    image: mrexpen/planet_olymp_phase1
+    pull_policy: always
+    ports:
+      - "8090:8080"
+    depends_on:
+      - nginx
+      - php
+    links:
+      - 'nginx:nginx'
+    networks:
+      - api
+    environment:
+      SERVER_URL: http://nginx:80
+      STAGE: all
+      # all - запуск всех тестов из трёх доступных этапов
+      # 0, 1, 2 или 3 - запуск тестов для соответствующего этапа
