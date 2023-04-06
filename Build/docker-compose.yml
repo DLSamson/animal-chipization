@@ -47,7 +47,7 @@ services:
     networks:
       - api
     volumes:
-      - './Docker/db/volumes/data:/var/lib/postgresql/data'
+      - './Docker/db/data:/var/lib/postgresql/data'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
@@ -67,7 +67,7 @@ services:
 
     # Сервис для разворачивания контейнера с автотестами
   tests:
-    image: mrexpen/planet_olymp_phase1
+    image: mrexpen/planet_olymp_phase2
     pull_policy: always
     ports:
       - "8090:8080"

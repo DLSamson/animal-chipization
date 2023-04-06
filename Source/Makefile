@@ -3,3 +3,6 @@ docker_init:
 
 database:
 	php bin/create_tables.php
+
+fill_tables:
+	php bin/fill_tables.php

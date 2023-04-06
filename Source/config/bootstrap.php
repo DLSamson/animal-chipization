@@ -68,6 +68,7 @@ try {
         'prefix' => !empty($_ENV['DB_PREFIX']) ? $_ENV['DB_PREFIX'] : '',
     ]);
     $eloquent->setAsGlobal();
+    $eloquent->bootEloquent();
 
 } catch (Throwable $error) {
     echo $error->getTraceAsString();
