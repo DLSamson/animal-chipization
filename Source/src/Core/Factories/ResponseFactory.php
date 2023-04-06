@@ -29,6 +29,10 @@ class ResponseFactory {
         return $responseFactory;
     }
 
+    public static function MakeFromStatusCode(int $statusCode) : Response {
+        return (new Response())->withStatus($statusCode);
+    }
+
     public function Custom(int $code, string $reasonPhrase) : ResponseInterface {
         return $this->response
             ->withStatus($code, $reasonPhrase);

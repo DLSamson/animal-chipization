@@ -7,5 +7,5 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 interface ControllerInterface {
 
-    public function process(Request $request, Response $response, array $args = []) : Response;
+    public function handle(Request $request, Response $response, array $args = []) : Response;
 }

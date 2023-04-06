@@ -2,8 +2,11 @@
 
 /* @var \Slim\App $app */
 
+use Api\Controllers\Api\Account;
+
 use Api\Controllers\Api\EchoController;
 use Api\Controllers\Pages\IndexController;
+use Api\Core\Services\Authorization;
 use Slim\Routing\RouteCollectorProxy;
 
 /* Pages */
@@ -24,3 +27,10 @@ $app->get('/echo/{value}', [EchoController::class, 'handle']);
 $app->group('', function(RouteCollectorProxy $group) {
 
 });
+
+/* Not allowed for authorized users */
+$app->group('', function (RouteCollectorProxy $group) {
+    $group->post('/registration', [Account\Create::class, 'handle'])->setName('account.create');
+})
+    ->add([Authorization::class, 'AuthAllowNull'])
+    ->add([Authorization::class, 'AuthNotAllowed']);
