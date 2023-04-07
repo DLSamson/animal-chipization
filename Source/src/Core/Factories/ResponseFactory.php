@@ -33,7 +33,7 @@ class ResponseFactory {
         return (new Response())->withStatus($statusCode);
     }
 
-    public function Custom(int $code, string $reasonPhrase) : ResponseInterface {
+    public function Custom(int $code, string $reasonPhrase = '') : ResponseInterface {
         return $this->response
             ->withStatus($code, $reasonPhrase);
     }

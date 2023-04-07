@@ -9,30 +9,35 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-abstract class BaseController implements ControllerInterface {
+abstract class BaseController implements ControllerInterface
+{
 
     protected LoggerInterface $log;
     protected ValidatorInterface $validator;
 
-    public function __construct(LoggerInterface $log, ValidatorInterface $validator) {
+    public function __construct(LoggerInterface $log, ValidatorInterface $validator)
+    {
         $this->log = $log;
         $this->validator = $validator;
     }
 
-    public function handle(Request $request, Response $response, array $args = []) : Response {
-        $errors = $this->validateRequest($request);
-        if($errors) return ResponseFactory::MakeJSON($errors)->BadRequest();
+    public function handle(Request $request, Response $response, array $args = []): Response
+    {
+        $errors = $this->validateRequest($request, $args);
+        if ($errors) return ResponseFactory::MakeJSON($errors)->BadRequest();
         return $this->process($request, $response, $args);
     }
 
-    protected function validateRequest(Request $request) : array {
+    protected function validateRequest(Request $request, array $args = []): array
+    {
         return [];
     }
 
-    protected function validate($data, $constraints) {
+    protected function validate($data, $constraints)
+    {
         $violations = $this->validator->validate($data, $constraints);
 
-        if($violations->count() === 0) return [];
+        if ($violations->count() === 0) return [];
 
         /* If has errors */
         $errors = [];
@@ -43,7 +48,8 @@ abstract class BaseController implements ControllerInterface {
         return $errors;
     }
 
-    protected function process(Request $request, Response $response, array $args = []): Response {
+    protected function process(Request $request, Response $response, array $args = []): Response
+    {
         return ResponseFactory::Make()->Success();
     }
 }

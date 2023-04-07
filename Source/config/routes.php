@@ -6,14 +6,24 @@ use Api\Controllers\Api\Account;
 
 use Api\Controllers\Api\EchoController;
 use Api\Controllers\Pages\IndexController;
+use Api\Core\Factories\ResponseFactory;
 use Api\Core\Services\Authorization;
+use Api\Core\Services\Formatters\AccountFormatter;
+use Fig\Http\Message\StatusCodeInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Routing\RouteCollectorProxy;
 
 /* Pages */
 $app->get('/', [IndexController::class, 'handle'])->setName('pages.index');
-$app->get('/info', function($req, $res) { phpinfo(); return $res->withStatus(200);});
+$app->get('/info', function ($req, $res) {
+    phpinfo();
+    return $res->withStatus(200);
+});
 
-$app->get('/test', function($req, $res) {
+$app->get('/test', function ($req, $res) {
+    
 
     return $res->withStatus(200);
 });
@@ -24,13 +34,21 @@ $app->get('/echo/{value}', [EchoController::class, 'handle']);
 
 /* Animal Chipization API */
 
-$app->group('', function(RouteCollectorProxy $group) {
-
-});
+/* Requires authorization */
+$app->group('', function (RouteCollectorProxy $group) {
+    $group->group('/accounts', function (RouteCollectorProxy $group) {
+        $group->get('/search', [Account\SearchController::class, 'handle'])->setName('accounts.search');
+        $group->get('[/{accountId}]', [Account\GetController::class, 'handle'])->setName('accounts.get');
+        $group->post('', [Account\CreateController::class, 'handle'])->setName('account.create');
+        $group->put('[/{accountId}]', [Account\UpdateController::class, 'handle'])->setName('account.update');
+        $group->delete('[/{accountId}]', [Account\DeleteController::class, 'handle'])->setName('account.delete');
+    });
+})
+    ->add([Authorization::class, 'AuthStrict']);
 
 /* Not allowed for authorized users */
 $app->group('', function (RouteCollectorProxy $group) {
-    $group->post('/registration', [Account\Create::class, 'handle'])->setName('account.create');
+    $group->post('/registration', [Account\RegisterController::class, 'handle'])->setName('account.create');
 })
     ->add([Authorization::class, 'AuthAllowNull'])
     ->add([Authorization::class, 'AuthNotAllowed']);

@@ -3,23 +3,31 @@
 namespace Api\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Account extends Model {
-    protected $table= 'accounts';
+class Account extends Model
+{
+    protected $table = 'accounts';
     protected $fillable = [
         'firstName',
         'lastName',
         'email',
         'password',
-        'role_id',
+        'role',
     ];
 
-    public static function HashPassword($password) {
-        return password_hash((string) $password, PASSWORD_DEFAULT);
+    public function isAdmin()
+    {
+        return $this->role === Role::ADMIN;
     }
 
-    public function role() : BelongsTo {
-        return $this->belongsTo(Role::class, 'id', 'role_id');
+    public static function HashPassword(string $password)
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    public function animals(): HasMany
+    {
+        return $this->hasMany(Animal::class, 'chipperId', 'id');
     }
 }

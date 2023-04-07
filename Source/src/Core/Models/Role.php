@@ -2,17 +2,23 @@
 
 namespace Api\Core\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Api\Core\Models\Account;
+use Illuminate\Database\Query\Builder;
 
-class Role extends Model
+class Role
 {
-    protected $table = 'roles';
-    protected $fillable = [
-      'name'
-    ];
+    const ADMIN = 'ADMIN';
+    const CHIPPER = 'CHIPPER';
+    const USER = 'USER';
+    
+    const DEFAULT = self::USER;
 
-    public function accounts() : BelongsToMany {
-        return $this->belongsToMany(Account::class, 'accounts', 'role_id', 'id');
+    /**
+     * @param string $role
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public static function accounts(string $role): Builder
+    {
+        return Account::where('role', $role);
     }
 }
