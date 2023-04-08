@@ -3,6 +3,7 @@
 /* @var \Slim\App $app */
 
 use Api\Controllers\Api\Account;
+use Api\Controllers\Api\Location;
 
 use Api\Controllers\Api\EchoController;
 use Api\Controllers\Pages\IndexController;
@@ -23,7 +24,6 @@ $app->get('/info', function ($req, $res) {
 });
 
 $app->get('/test', function ($req, $res) {
-    
 
     return $res->withStatus(200);
 });
@@ -36,6 +36,13 @@ $app->get('/echo/{value}', [EchoController::class, 'handle']);
 
 /* Requires authorization */
 $app->group('', function (RouteCollectorProxy $group) {
+    $group->group('/locations', function (RouteCollectorProxy $group) {
+        $group->get('[/{pointId}]', [Location\GetController::class, 'handle'])->setName('locations.get');
+        $group->post('', [Location\CreateController::class, 'handle'])->setName('locations.create');
+        $group->put('[/{pointId}]', [Location\UpdateController::class, 'handle'])->setName('locations.update');
+        $group->delete('[/{pointId}]', [Location\DeleteController::class, 'handle'])->setName('locations.delete');
+    });
+
     $group->group('/accounts', function (RouteCollectorProxy $group) {
         $group->get('/search', [Account\SearchController::class, 'handle'])->setName('accounts.search');
         $group->get('[/{accountId}]', [Account\GetController::class, 'handle'])->setName('accounts.get');

@@ -12,39 +12,42 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\ValidatorBuilder;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-if(!defined('ROOT_PATH'))
+if (!defined('ROOT_PATH'))
     define('ROOT_PATH', dirname(__DIR__));
 
+/* For location precision */
+ini_set('precision', 17);
+
 /* Folders */
-if(!is_dir(ROOT_PATH.'/log'))
-    mkdir(ROOT_PATH.'/log');
+if (!is_dir(ROOT_PATH . '/log'))
+    mkdir(ROOT_PATH . '/log');
 
-if(!is_dir(ROOT_PATH.'/cache'))
-    mkdir(ROOT_PATH.'/cache');
+if (!is_dir(ROOT_PATH . '/cache'))
+    mkdir(ROOT_PATH . '/cache');
 
-if(!is_dir(ROOT_PATH.'/cache/templates'))
-    mkdir(ROOT_PATH.'/cache/templates');
+if (!is_dir(ROOT_PATH . '/cache/templates'))
+    mkdir(ROOT_PATH . '/cache/templates');
 
-if(!is_dir(ROOT_PATH.'/templates'))
-    mkdir(ROOT_PATH.'/templates');
+if (!is_dir(ROOT_PATH . '/templates'))
+    mkdir(ROOT_PATH . '/templates');
 
 /* Container */
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->useAutowiring(true);
 $containerBuilder->addDefinitions([
-    LoggerInterface::class => DI\factory(function() {
-        return new Logger('main', [new StreamHandler(ROOT_PATH.'/log/main.log', Logger::INFO)]);
+    LoggerInterface::class => DI\factory(function () {
+        return new Logger('main', [new StreamHandler(ROOT_PATH . '/log/main.log', Logger::INFO)]);
     }),
-    ValidatorInterface::class => DI\factory(function() {
+    ValidatorInterface::class => DI\factory(function () {
         return (new ValidatorBuilder())->getValidator();
     }),
     Fenom::class => DI\factory(function () {
-        return Fenom::factory(ROOT_PATH.'/templates', ROOT_PATH.'/cache/templates',
+        return Fenom::factory(ROOT_PATH . '/templates', ROOT_PATH . '/cache/templates',
             Fenom::AUTO_RELOAD | Fenom::AUTO_STRIP | Fenom::AUTO_ESCAPE
         );
     }),
-    'env' => function() {
-        $dotenv = Dotenv::createImmutable(ROOT_PATH.'/.env');
+    'env' => function () {
+        $dotenv = Dotenv::createImmutable(ROOT_PATH . '/.env');
         return $dotenv->safeLoad();
     },
 ]);

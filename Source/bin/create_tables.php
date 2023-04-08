@@ -29,8 +29,11 @@ Capsule::schema()->create('accounts', function (Blueprint $table) {
 Capsule::schema()->create('locations', function (Blueprint $table) {
     $table->id();
 
-    $table->float('latitude', 23, 20);
-    $table->float('longitude', 23, 20);
+    /* Since I have no idea how to make php work fine with high precision float values */
+//    $table->float('latitude', 20, 16);
+//    $table->float('longitude', 20, 16);
+    $table->string('latitude');
+    $table->string('longitude');
 
     $table->timestamps();
     $table->softDeletes();

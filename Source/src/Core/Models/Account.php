@@ -21,6 +21,11 @@ class Account extends Model
         return $this->role === Role::ADMIN;
     }
 
+    public function isChipper()
+    {
+        return $this->role === Role::CHIPPER;
+    }
+
     public static function HashPassword(string $password)
     {
         return password_hash($password, PASSWORD_DEFAULT);

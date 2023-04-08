@@ -38,8 +38,6 @@ class SearchController extends BaseController
             ->limit($params['size'])
             ->get();
 
-//        echo json_encode($queryConditions);
-
         return ResponseFactory::MakeJSON(AccountFormatter::PrepareMany($accounts))->Success();
     }
 
