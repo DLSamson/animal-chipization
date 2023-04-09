@@ -16,14 +16,10 @@ class LocationFormatter
         ];
     }
 
-    public static function PrepareMany(Collection $accounts)
+    public static function PrepareMany(Collection $locations)
     {
-        return array_map(function ($location) {
-            return [
-                'id' => $location['id'],
-                'longitude' => $location['longitude'],
-                'latitude' => $location['latitude'],
-            ];
-        }, $accounts->toArray());
+        return $locations->map(function ($location) {
+            return self::PrepareOne($location);
+        })->toArray();
     }
 }

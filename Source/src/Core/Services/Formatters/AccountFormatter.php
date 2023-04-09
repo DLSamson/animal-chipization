@@ -20,14 +20,8 @@ class AccountFormatter
 
     public static function PrepareMany(Collection $accounts)
     {
-        return array_map(function ($account) {
-            return [
-                'id' => $account['id'],
-                'firstName' => $account['firstName'],
-                'lastName' => $account['lastName'],
-                'email' => $account['email'],
-                'role' => $account['role'],
-            ];
-        }, $accounts->toArray());
+        return $accounts->map(function ($account) {
+            return self::PrepareOne($account);
+        })->toArray();
     }
 }

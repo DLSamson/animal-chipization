@@ -6,10 +6,12 @@ use Slim\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Fig\Http\Message\StatusCodeInterface;
 
-class ResponseFactory {
+class ResponseFactory
+{
     public Response $response;
 
-    public static function MakeJSON($data = null) : ResponseFactory {
+    public static function MakeJSON($data = null): ResponseFactory
+    {
         $response = new Response();
         $response->getBody()->write(json_encode($data ?: []));
 
@@ -19,7 +21,8 @@ class ResponseFactory {
         return $responseFactory;
     }
 
-    public static function Make($content = '') : ResponseFactory {
+    public static function Make($content = ''): ResponseFactory
+    {
         $response = new Response();
         $response->getBody()->write($content);
 
@@ -29,20 +32,25 @@ class ResponseFactory {
         return $responseFactory;
     }
 
-    public static function MakeFromStatusCode(int $statusCode) : Response {
-        return (new Response())->withStatus($statusCode);
+    public static function MakeFromStatusCode(int $statusCode, string $reasonPhrase = ''): Response
+    {
+        return (new Response())->withStatus($statusCode, $reasonPhrase);
     }
 
-    public function Custom(int $code, string $reasonPhrase = '') : ResponseInterface {
+    public function Custom(int $code, string $reasonPhrase = ''): ResponseInterface
+    {
         return $this->response
             ->withStatus($code, $reasonPhrase);
     }
 
-    public function Success() : ResponseInterface {
+    public function Success(): ResponseInterface
+    {
         return $this->response
             ->withStatus(StatusCodeInterface::STATUS_OK);
     }
-    public function BadRequest() : ResponseInterface {
+
+    public function BadRequest(): ResponseInterface
+    {
         return $this->response
             ->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
     }
