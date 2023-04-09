@@ -7,11 +7,19 @@ use Api\Controllers\Api\Location;
 use Api\Controllers\Api\Type;
 use Api\Controllers\Api\Animal;
 use Api\Controllers\Api\AnimalType;
+use Api\Controllers\Api\Area;
 
 use Api\Controllers\Api\EchoController;
 use Api\Controllers\Pages\IndexController;
 use Api\Core\Services\Authorization;
 use Slim\Routing\RouteCollectorProxy;
+
+use Brick\Geo\Polygon;
+use Brick\Geo\Point;
+use Brick\Geo\LineString;
+use Api\Core\Models;
+use Symfony\Component\Validator\ValidatorBuilder;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /* Pages */
 $app->get('/', [IndexController::class, 'handle'])->setName('pages.index');
@@ -19,13 +27,42 @@ $app->get('/info', function ($req, $res) {
     phpinfo();
     return $res->withStatus(200);
 });
-
-use Api\Core\Models\Area;
-
 $app->get('/test', function ($req, $res) {
-    $area = new Area();
-    $area->
+    $data = json_decode('{
+        "name": "9e7db572-3e1d-4828-9ff9-490700928aac",
+        "areaPoints": [
+            {
+                "latitude": -29.0,
+                "longitude": -179.0
+            },
+            {
+                "latitude": -29.0,
+                "longitude": -175.75
+            },
+            {
+                "latitude": -29.0,
+                "longitude": -172.5
+            },
+            {
+                "latitude": -29.0,
+                "longitude": -169.25
+            },
+            {
+                "latitude": -29.0,
+                "longitude": -166.0
+            }
+        ]
+    }    ', true);
 
+    dump(Models\Area::convertManyPointsToString($data['areaPoints']));
+
+    $area = Models\Area::where([['areaPoints', '&&', Models\Area::convertManyPointsToString($data['areaPoints'])]])->get();
+    $validator = (new ValidatorBuilder())->getValidator();
+    $errors = $validator->validate('-90', [
+        new Assert\NotBlank(), new Assert\Range(['min' => -90, 'max' => 90])
+    ]);
+    dump($area);
+    dump($errors);
 
     return $res->withStatus(200);
 });
@@ -38,6 +75,13 @@ $app->get('/echo/{value}', [EchoController::class, 'handle']);
 
 /* Requires authorization */
 $app->group('', function (RouteCollectorProxy $group) {
+    $group->group('/areas', function (RouteCollectorProxy $group) {
+        $group->get('[/{areaId}]', [Area\GetController::class, 'handle'])->setName('area.create');
+        $group->post('', [Area\CreateController::class, 'handle'])->setName('area.create');
+//        $group->put('[/{areaId}]', [Area\UpdateController::class, 'handle'])->setName('area.update');
+        $group->delete('[/{areaId}]', [Area\DeleteController::class, 'handle'])->setName('area.delete');
+    });
+
     $group->group('/animals/types', function (RouteCollectorProxy $group) {
         $group->get('[/{typeId}]', [Type\GetController::class, 'handle'])->setName('type.get');
         $group->post('', [Type\CreateController::class, 'handle'])->setName('type.create');

@@ -4,8 +4,67 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a9a6cf4679509aaa7ed70c2e37a7708",
+    "content-hash": "28633b4a69ea41b09ed6b9f3088547e7",
     "packages": [
+        {
+            "name": "brick/geo",
+            "version": "0.7.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/geo.git",
+                "reference": "725789f7c090235e230b9a666acf59e0fc7f8e24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/geo/zipball/725789f7c090235e230b9a666acf59e0fc7f8e24",
+                "reference": "725789f7c090235e230b9a666acf59e0fc7f8e24",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "brick/reflection": "~0.2.0 || ~0.3.0 || ~0.4.0",
+                "ext-json": "*",
+                "ext-pdo": "*",
+                "ext-sqlite3": "*",
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/phpunit": "^8.0 || ^9.0",
+                "vimeo/psalm": "4.3.1"
+            },
+            "suggest": {
+                "ext-json": "To read and write GeoJSON"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Geo\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "GIS geometry library",
+            "keywords": [
+                "brick",
+                "geo",
+                "geography",
+                "geometry",
+                "gis"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/geo/issues",
+                "source": "https://github.com/brick/geo/tree/0.7.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-10-09T22:30:24+00:00"
+        },
         {
             "name": "doctrine/inflector",
             "version": "2.0.6",
@@ -957,6 +1016,46 @@
                 "source": "https://github.com/nikic/FastRoute/tree/master"
             },
             "time": "2018-02-13T20:26:39+00:00"
+        },
+        {
+            "name": "phayes/geophp",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phayes/geoPHP.git",
+                "reference": "015404e85b602e0df1f91441f8db0f9e98f7e567"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phayes/geoPHP/zipball/015404e85b602e0df1f91441f8db0f9e98f7e567",
+                "reference": "015404e85b602e0df1f91441f8db0f9e98f7e567",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "geoPHP.inc"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2 or New-BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Patrick Hayes"
+                }
+            ],
+            "description": "GeoPHP is a open-source native PHP library for doing geometry operations. It is written entirely in PHP and can therefore run on shared hosts. It can read and write a wide variety of formats: WKT (including EWKT), WKB (including EWKB), GeoJSON, KML, GPX, GeoRSS). It works with all Simple-Feature geometries (Point, LineString, Polygon, GeometryCollection etc.) and can be used to get centroids, bounding-boxes, area, and a wide variety of other useful information.",
+            "homepage": "https://github.com/phayes/geoPHP",
+            "support": {
+                "issues": "https://github.com/phayes/geoPHP/issues",
+                "source": "https://github.com/phayes/geoPHP/tree/master"
+            },
+            "time": "2014-12-02T06:11:22+00:00"
         },
         {
             "name": "php-di/invoker",
@@ -3270,5 +3369,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -28,7 +28,6 @@ Capsule::schema()->create('accounts', function (Blueprint $table) {
     $table->timestamps();
     $table->softDeletes();
 });
-
 Capsule::schema()->create('locations', function (Blueprint $table) {
     $table->id();
 
@@ -41,7 +40,6 @@ Capsule::schema()->create('locations', function (Blueprint $table) {
     $table->timestamps();
     $table->softDeletes();
 });
-
 Capsule::schema()->create('types', function (Blueprint $table) {
     $table->id();
 
@@ -50,7 +48,6 @@ Capsule::schema()->create('types', function (Blueprint $table) {
     $table->timestamps();
     $table->softDeletes();
 });
-
 Capsule::schema()->create('animals', function (Blueprint $table) {
     $table->id();
 
@@ -75,7 +72,6 @@ Capsule::schema()->create('animals', function (Blueprint $table) {
     $table->timestamps();
     $table->softDeletes();
 });
-
 Capsule::schema()->create('animals_types', function (Blueprint $table) {
     $table->id();
     $table->unsignedBigInteger('animal_id');
@@ -103,9 +99,26 @@ Capsule::schema()->create('animals_locations', function (Blueprint $table) {
     $table->softDeletes();
 });
 
-Capsule::schema()->create('areas', function (Blueprint $table) {
 
-    $table->polygon('test');
-});
+Capsule::schema()->dropIfExists('areas');
+//Capsule::schema()->create('areas', function (Blueprint $table) {
+//    $table->id();
+//
+//    $table->string('name');
+//    $table->polygon('area');
+//
+//    $table->timestamps();
+//    $table->softDeletes();
+//});
+/* Since we cannot use PostGis and I don't want to spend time for searching appropriate libs  */
+Capsule::select('CREATE TABLE areas (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255),
+      "areaPoints" POLYGON,
+      created_at TIMESTAMP,
+      updated_at TIMESTAMP,
+      deleted_at TIMESTAMP
+    );
+');
 
 echo 'DATABASE CREATED' . PHP_EOL;
