@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Api\Core\Validation\Constraints as OwnAssert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class CreateController extends BaseController
+class UpdateController extends BaseController
 {
     protected function process(Request $request, Response $response, array $args = []): Response
     {
@@ -23,38 +23,44 @@ class CreateController extends BaseController
         if ($currentAccount && !$currentAccount->isAdmin())
             return ResponseFactory::MakeFromStatusCode(StatusCodeInterface::STATUS_FORBIDDEN);
 
+        $areaId = $args['areaId'];
         $json = $request->getBody();
         $data = json_decode($json, true);
         $pointsCount = count($data['areaPoints']);
         $data['areaPoints'] = Area::convertManyPointsToString($data['areaPoints']);
 
-        if (Area::where(['name' => $data['name']])->first())
+        if (Area::where([['id', '<>', $areaId], 'name' => $data['name']])->first())
             return ResponseFactory::MakeFromStatusCode(StatusCodeInterface::STATUS_CONFLICT,
                 'Name has already been taken');
 
-        if ($secondArea = Area::whereRawRepeat($data['areaPoints'])->first())
+        if ($secondArea = Area::whereRawRepeat($data['areaPoints'])->where([['id', '<>', $areaId]])->first())
             return ResponseFactory::MakeJSON($secondArea->toArray())->Custom(StatusCodeInterface::STATUS_CONFLICT,
                 'Points have already been taken');
 
         if ($pointsCount != 3) {
-            if ($secondArea = Area::whereRawIntersects($data['areaPoints'])->first())
+            if ($secondArea = Area::whereRawIntersects($data['areaPoints'])->where([['id', '<>', $areaId]])->first())
                 return ResponseFactory::MakeJSON($secondArea->toArray())->Custom(StatusCodeInterface::STATUS_BAD_REQUEST,
                     'The zone intersects with another zone');
         } else
-            if ($area = Area::hasIntersectingTriangles($data['areaPoints']))
+            if ($area = Area::hasIntersectingTriangles($data['areaPoints'], $areaId))
                 return ResponseFactory::MakeJSON($area->toArray())->Custom(StatusCodeInterface::STATUS_BAD_REQUEST,
                     'The zone intersects with another zone');
 
-        $area = new Area($data);
+        $area = Area::find($areaId);
+        $area->fill($data);
+
         if ($area->save())
-            return ResponseFactory::MakeJSON(AreaFormatter::PrepareOne($area))
-                ->Custom(StatusCodeInterface::STATUS_CREATED);
+            return ResponseFactory::MakeJSON(AreaFormatter::PrepareOne($area))->Success();
 
         return ResponseFactory::MakeFromStatusCode(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
     }
 
     protected function validateRequest(Request $request, array $args = []): array
     {
+        $areaId = (int)$args['areaId'];
+        $errors = $this->validate($areaId, [new Assert\NotNull(), new Assert\Positive()]);
+        if ($errors) return $errors;
+
         $json = $request->getBody();
         $data = json_decode($json, true);
         $errors = $this->validate($data, new Assert\Collection([

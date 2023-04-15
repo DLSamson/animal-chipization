@@ -11,7 +11,9 @@ use Api\Controllers\Api\Area;
 
 use Api\Controllers\Api\EchoController;
 use Api\Controllers\Pages\IndexController;
+use Api\Core\Factories\ResponseFactory;
 use Api\Core\Services\Authorization;
+use Fig\Http\Message\StatusCodeInterface;
 use Slim\Routing\RouteCollectorProxy;
 
 use Brick\Geo\Polygon;
@@ -20,6 +22,7 @@ use Brick\Geo\LineString;
 use Api\Core\Models;
 use Symfony\Component\Validator\ValidatorBuilder;
 use Symfony\Component\Validator\Constraints as Assert;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 /* Pages */
 $app->get('/', [IndexController::class, 'handle'])->setName('pages.index');
@@ -29,40 +32,46 @@ $app->get('/info', function ($req, $res) {
 });
 $app->get('/test', function ($req, $res) {
     $data = json_decode('{
-        "name": "9e7db572-3e1d-4828-9ff9-490700928aac",
-        "areaPoints": [
-            {
-                "latitude": -29.0,
-                "longitude": -179.0
-            },
-            {
-                "latitude": -29.0,
-                "longitude": -175.75
-            },
-            {
-                "latitude": -29.0,
-                "longitude": -172.5
-            },
-            {
-                "latitude": -29.0,
-                "longitude": -169.25
-            },
-            {
-                "latitude": -29.0,
-                "longitude": -166.0
-            }
-        ]
-    }    ', true);
+    "name": "f08575dd-e580-40a3-89ae-8f975758b51d",
+    "areaPoints": [
+        {
+            "latitude": 61.0,
+            "longitude": -179.0
+        },
+        {
+            "latitude": 61.0,
+            "longitude": -166.0
+        },
+        {
+            "latitude": 74.0,
+            "longitude": -166.0
+        }
+    ]
+} ', true);
+    $pointsCount = count($data['areaPoints']);
+    $data['areaPoints'] = \Api\Core\Models\Area::convertManyPointsToString($data['areaPoints']);
 
-    dump(Models\Area::convertManyPointsToString($data['areaPoints']));
+//    dump($data, $pointsCount);
 
-    $area = Models\Area::where([['areaPoints', '&&', Models\Area::convertManyPointsToString($data['areaPoints'])]])->get();
-    $validator = (new ValidatorBuilder())->getValidator();
-    $errors = $validator->validate('-90', [
-        new Assert\NotBlank(), new Assert\Range(['min' => -90, 'max' => 90])
-    ]);
-    dump($area);
-    dump($errors);
+    if ($pointsCount != 3) {
+        if ($secondArea = \Api\Core\Models\Area::whereRawIntersects($data['areaPoints'])->first())
+            return ResponseFactory::MakeJSON($secondArea->toArray())->Custom(StatusCodeInterface::STATUS_BAD_REQUEST,
+                'The zone intersects with another zone');
+    } else
+        if ($area = Models\Area::hasIntersectingTriangles($data['areaPoints']))
+            return ResponseFactory::MakeJSON($area->toArray())->Custom(StatusCodeInterface::STATUS_BAD_REQUEST,
+                'The zone intersects with another zone');
+
+    //Пересекает
+    '((0,0), (0,2), (2,2), (2,0))';
+    '((1,1), (1,3), (3,3), (3,1))';
+
+    //Касается
+    '((0,0), (0,2), (2,2), (2,0))';
+    '((2,0), (2,2), (2,4), (4,0))';
+
+    /* Два треугольника впритык */
+    '(-166, 14), (-179, 14), (-172.5, 3), (-179, 1), (-166, 1), (-166, 7), (-180, 7)';
 
     return $res->withStatus(200);
 });
@@ -78,7 +87,7 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->group('/areas', function (RouteCollectorProxy $group) {
         $group->get('[/{areaId}]', [Area\GetController::class, 'handle'])->setName('area.create');
         $group->post('', [Area\CreateController::class, 'handle'])->setName('area.create');
-//        $group->put('[/{areaId}]', [Area\UpdateController::class, 'handle'])->setName('area.update');
+        $group->put('[/{areaId}]', [Area\UpdateController::class, 'handle'])->setName('area.update');
         $group->delete('[/{areaId}]', [Area\DeleteController::class, 'handle'])->setName('area.delete');
     });
 
