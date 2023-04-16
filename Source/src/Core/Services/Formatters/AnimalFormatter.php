@@ -4,36 +4,33 @@ namespace Api\Core\Services\Formatters;
 
 use Api\Core\Models\Animal;
 use Api\Core\Models\AnimalLocation;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class AnimalFormatter
+class AnimalFormatter extends BaseFormatter
 {
-    public static function PrepareOne(Animal $animal)
+    /**
+     * @param Animal $model
+     * @return array
+     */
+    public static function PrepareOne(Model $model): array
     {
         return [
-            'id' => $animal->id,
-            'animalTypes' => $animal->types()
+            'id' => $model->id,
+            'animalTypes' => $model->types()
                 ->get()->map(fn($el) => $el->id)->toArray(),
-            'weight' => $animal->weight,
-            'length' => $animal->length,
-            'height' => $animal->height,
-            'gender' => $animal->gender,
-            'lifeStatus' => $animal->lifeStatus,
-            'chippingDateTime' => DateFormatter::formatToISO8601($animal->chippingDateTime),
-            'chipperId' => $animal->chipperId,
-            'chippingLocationId' => $animal->chippingLocationId,
-            'visitedLocations' => AnimalLocation::where(['animal_id' => $animal->id])
+            'weight' => $model->weight,
+            'length' => $model->length,
+            'height' => $model->height,
+            'gender' => $model->gender,
+            'lifeStatus' => $model->lifeStatus,
+            'chippingDateTime' => DateFormatter::formatToISO8601($model->chippingDateTime),
+            'chipperId' => $model->chipperId,
+            'chippingLocationId' => $model->chippingLocationId,
+            'visitedLocations' => AnimalLocation::where(['animal_id' => $model->id])
                 ->get()->map(fn($el) => $el->id),
-            'deathDateTime' => $animal->lifeStatus == Animal::LIFE_STATUS_DEAD
-                ? DateFormatter::formatToISO8601($animal->deathDateTime)
+            'deathDateTime' => $model->lifeStatus == Animal::LIFE_STATUS_DEAD
+                ? DateFormatter::formatToISO8601($model->deathDateTime)
                 : null,
         ];
-    }
-
-    public static function PrepareMany(Collection $animals)
-    {
-        return $animals->map(function ($animal) {
-            return self::PrepareOne($animal);
-        })->toArray();
     }
 }

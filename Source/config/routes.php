@@ -7,6 +7,7 @@ use Api\Controllers\Api\Location;
 use Api\Controllers\Api\Type;
 use Api\Controllers\Api\Animal;
 use Api\Controllers\Api\AnimalType;
+use Api\Controllers\Api\AnimalLocation;
 use Api\Controllers\Api\Area;
 
 use Api\Controllers\Api\EchoController;
@@ -15,14 +16,7 @@ use Api\Core\Factories\ResponseFactory;
 use Api\Core\Services\Authorization;
 use Fig\Http\Message\StatusCodeInterface;
 use Slim\Routing\RouteCollectorProxy;
-
-use Brick\Geo\Polygon;
-use Brick\Geo\Point;
-use Brick\Geo\LineString;
 use Api\Core\Models;
-use Symfony\Component\Validator\ValidatorBuilder;
-use Symfony\Component\Validator\Constraints as Assert;
-use Illuminate\Database\Capsule\Manager as Capsule;
 
 /* Pages */
 $app->get('/', [IndexController::class, 'handle'])->setName('pages.index');
@@ -31,49 +25,41 @@ $app->get('/info', function ($req, $res) {
     return $res->withStatus(200);
 });
 $app->get('/test', function ($req, $res) {
-    $data = json_decode('{
-    "name": "f08575dd-e580-40a3-89ae-8f975758b51d",
-    "areaPoints": [
-        {
-            "latitude": 61.0,
-            "longitude": -179.0
-        },
-        {
-            "latitude": 61.0,
-            "longitude": -166.0
-        },
-        {
-            "latitude": 74.0,
-            "longitude": -166.0
-        }
-    ]
-} ', true);
-    $pointsCount = count($data['areaPoints']);
-    $data['areaPoints'] = \Api\Core\Models\Area::convertManyPointsToString($data['areaPoints']);
+    $accounts = Models\Animal::all();
+    dump(\Api\Core\Services\Formatters\AnimalFormatter::PrepareMany($accounts));
 
-//    dump($data, $pointsCount);
+    $animalId = 85;
 
-    if ($pointsCount != 3) {
-        if ($secondArea = \Api\Core\Models\Area::whereRawIntersects($data['areaPoints'])->first())
-            return ResponseFactory::MakeJSON($secondArea->toArray())->Custom(StatusCodeInterface::STATUS_BAD_REQUEST,
-                'The zone intersects with another zone');
-    } else
-        if ($area = Models\Area::hasIntersectingTriangles($data['areaPoints']))
-            return ResponseFactory::MakeJSON($area->toArray())->Custom(StatusCodeInterface::STATUS_BAD_REQUEST,
-                'The zone intersects with another zone');
+    $params = [
+//        'from' => 0,
+        'size' => 30,
+        'startDateTime' => '2023-04-16T15:04:17Z',
+        'endDateTime' => '2023-04-16T15:04:19Z',
+    ];
+    $params['from'] = $params['from'] ?: 0;
+    $params['size'] = $params['size'] ?: 10;
 
-    //Пересекает
-    '((0,0), (0,2), (2,2), (2,0))';
-    '((1,1), (1,3), (3,3), (3,1))';
+    dump($params);
 
-    //Касается
-    '((0,0), (0,2), (2,2), (2,0))';
-    '((2,0), (2,2), (2,4), (4,0))';
+    $queryCondition = [];
 
-    /* Два треугольника впритык */
-    '(-166, 14), (-179, 14), (-172.5, 3), (-179, 1), (-166, 1), (-166, 7), (-180, 7)';
+    if ($params['startDateTime'])
+        $queryCondition[] = ['chippingDateTime', '<=', $params['startDateTime']];
+    if ($params['endDateTime'])
+        $queryCondition[] = ['chippingDateTime', '>=', $params['endDateTime']];
 
-    return $res->withStatus(200);
+    dump($queryCondition);
+
+    $locations = \Api\Core\Models\Animal::where($queryCondition)
+        ->withTrashed()
+        ->orderBy('id', 'ASC')
+        ->offset($params['from'])
+        ->limit($params['size'])
+        ->get();
+
+    dump($locations->toArray());
+
+    return $res->withStatus(404);
 });
 
 /* Api */
@@ -109,6 +95,13 @@ $app->group('', function (RouteCollectorProxy $group) {
             $group->post('[/{typeId}]', [AnimalType\AddController::class, 'handle'])->setName('animal.type.add');
             $group->put('[/{typeId}]', [AnimalType\UpdateController::class, 'handle'])->setName('animal.type.update');
             $group->delete('[/{typeId}]', [AnimalType\DeleteController::class, 'handle'])->setName('animal.type.delete');
+        });
+
+        $group->group('/{animalId}', function (RouteCollectorProxy $group) {
+            $group->get('/locations', [AnimalLocation\GetController::class, 'handle'])->setName('animal.location.get');
+            $group->post('/locations[/{pointId}]', [AnimalLocation\AddController::class, 'handle'])->setName('animal.location.add');
+            $group->put('/locations[/{pointId}]', [AnimalLocation\UpdateController::class, 'handle'])->setName('animal.location.update');
+            $group->delete('/locations[/{visitedPointId}]', [AnimalLocation\DeleteController::class, 'handle'])->setName('animal.location.delete');
         });
     });
 

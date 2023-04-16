@@ -3,25 +3,22 @@
 namespace Api\Core\Services\Formatters;
 
 use Api\Core\Models\Account;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class AccountFormatter
+class AccountFormatter extends BaseFormatter
 {
-    public static function PrepareOne(Account $account)
+    /**
+     * @param Account $model
+     * @return array
+     */
+    public static function PrepareOne(Model $model): array
     {
         return [
-            'id' => $account->id,
-            'firstName' => $account->firstName,
-            'lastName' => $account->lastName,
-            'email' => $account->email,
-            'role' => $account->role,
+            'id' => $model->id,
+            'firstName' => $model->firstName,
+            'lastName' => $model->lastName,
+            'email' => $model->email,
+            'role' => $model->role,
         ];
-    }
-
-    public static function PrepareMany(Collection $accounts)
-    {
-        return $accounts->map(function ($account) {
-            return self::PrepareOne($account);
-        })->toArray();
     }
 }

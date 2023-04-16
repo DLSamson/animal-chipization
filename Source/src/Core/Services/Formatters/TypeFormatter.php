@@ -3,22 +3,19 @@
 namespace Api\Core\Services\Formatters;
 
 use Api\Core\Models\Type;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class TypeFormatter
+class TypeFormatter extends BaseFormatter
 {
-    public static function PrepareOne(Type $type)
+    /**
+     * @param Type $model
+     * @return array
+     */
+    public static function PrepareOne(Model $model): array
     {
         return [
-            'id' => $type->id,
-            'type' => $type->type,
+            'id' => $model->id,
+            'type' => $model->type,
         ];
-    }
-
-    public static function PrepareMany(Collection $types)
-    {
-        return $types->map(function ($type) {
-            return self::PrepareOne($type);
-        })->toArray();
     }
 }

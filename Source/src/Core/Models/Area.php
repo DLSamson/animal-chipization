@@ -26,10 +26,7 @@ class Area extends Model
 
     public static function convertStringToPoints(string $DBString)
     {
-        /* @TODO Remove, it was for tests */
-        //$DBString = '((-179, -29), (-175.75, -29), (-172.5, -29), (-169.25, -29), (-166, -29))';
         $DBString = substr($DBString, 1, strlen($DBString) - 2);
-
         preg_match_all('/(\((?<longitude>.+?), ?(?<latitude>.+?)\))/', $DBString, $matches);
         return array_map(fn($longitude, $latitude) => ['longitude' => $longitude, 'latitude' => $latitude],
             $matches['longitude'], $matches['latitude']);
@@ -41,12 +38,12 @@ class Area extends Model
         return self::whereRaw("\"areaPoints\" ~= '{$points}'");
     }
 
-    /* Проверяет, если они пересекаются, а не просто касаются.
+    /*
+        Проверяет, если они пересекаются, а не просто касаются.
         Плохо работает для не квадратов
     */
     public static function whereRawIntersects(string $points)
     {
-//        return self::whereRaw("pclose(path(\"areaPoints\")) ??# pclose(path('{$points}'))");
         return self::whereRaw("
                 PATH(\"areaPoints\") <-> PATH('{$points}') = 0  AND
                 POLYGON(\"areaPoints\") && POLYGON('{$points}') AND

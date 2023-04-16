@@ -3,23 +3,20 @@
 namespace Api\Core\Services\Formatters;
 
 use Api\Core\Models\Location;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class LocationFormatter
+class LocationFormatter extends BaseFormatter
 {
-    public static function PrepareOne(Location $location)
+    /**
+     * @param Location $model
+     * @return array
+     */
+    public static function PrepareOne(Model $model): array
     {
         return [
-            'id' => $location->id,
-            'longitude' => $location->longitude,
-            'latitude' => $location->latitude,
+            'id' => $model->id,
+            'longitude' => $model->longitude,
+            'latitude' => $model->latitude,
         ];
-    }
-
-    public static function PrepareMany(Collection $locations)
-    {
-        return $locations->map(function ($location) {
-            return self::PrepareOne($location);
-        })->toArray();
     }
 }

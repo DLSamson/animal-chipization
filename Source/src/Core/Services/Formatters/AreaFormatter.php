@@ -3,23 +3,20 @@
 namespace Api\Core\Services\Formatters;
 
 use Api\Core\Models\Area;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class AreaFormatter
+class AreaFormatter extends BaseFormatter
 {
-    public static function PrepareOne(Area $area)
+    /**
+     * @param Area $model
+     * @return array
+     */
+    public static function PrepareOne(Model $model): array
     {
         return [
-            'id' => $area->id,
-            'name' => $area->name,
-            'areaPoints' => Area::convertStringToPoints($area->areaPoints),
+            'id' => $model->id,
+            'name' => $model->name,
+            'areaPoints' => Area::convertStringToPoints($model->areaPoints),
         ];
-    }
-
-    public static function PrepareMany(Collection $area)
-    {
-        return $area->map(function ($area) {
-            return self::PrepareOne($area);
-        })->toArray();
     }
 }
