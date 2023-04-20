@@ -3,20 +3,16 @@
 /* @var \Slim\App $app */
 
 use Api\Controllers\Api\Account;
+use Api\Controllers\Api\Animal;
+use Api\Controllers\Api\AnimalLocation;
+use Api\Controllers\Api\AnimalType;
+use Api\Controllers\Api\Area;
+use Api\Controllers\Api\EchoController;
 use Api\Controllers\Api\Location;
 use Api\Controllers\Api\Type;
-use Api\Controllers\Api\Animal;
-use Api\Controllers\Api\AnimalType;
-use Api\Controllers\Api\AnimalLocation;
-use Api\Controllers\Api\Area;
-
-use Api\Controllers\Api\EchoController;
 use Api\Controllers\Pages\IndexController;
-use Api\Core\Factories\ResponseFactory;
 use Api\Core\Services\Authorization;
-use Fig\Http\Message\StatusCodeInterface;
 use Slim\Routing\RouteCollectorProxy;
-use Api\Core\Models;
 
 /* Pages */
 $app->get('/', [IndexController::class, 'handle'])->setName('pages.index');
@@ -25,41 +21,7 @@ $app->get('/info', function ($req, $res) {
     return $res->withStatus(200);
 });
 $app->get('/test', function ($req, $res) {
-    $accounts = Models\Animal::all();
-    dump(\Api\Core\Services\Formatters\AnimalFormatter::PrepareMany($accounts));
-
-    $animalId = 85;
-
-    $params = [
-//        'from' => 0,
-        'size' => 30,
-        'startDateTime' => '2023-04-16T15:04:17Z',
-        'endDateTime' => '2023-04-16T15:04:19Z',
-    ];
-    $params['from'] = $params['from'] ?: 0;
-    $params['size'] = $params['size'] ?: 10;
-
-    dump($params);
-
-    $queryCondition = [];
-
-    if ($params['startDateTime'])
-        $queryCondition[] = ['chippingDateTime', '<=', $params['startDateTime']];
-    if ($params['endDateTime'])
-        $queryCondition[] = ['chippingDateTime', '>=', $params['endDateTime']];
-
-    dump($queryCondition);
-
-    $locations = \Api\Core\Models\Animal::where($queryCondition)
-        ->withTrashed()
-        ->orderBy('id', 'ASC')
-        ->offset($params['from'])
-        ->limit($params['size'])
-        ->get();
-
-    dump($locations->toArray());
-
-    return $res->withStatus(404);
+    return $res->withStatus(200);
 });
 
 /* Api */
@@ -75,6 +37,8 @@ $app->group('', function (RouteCollectorProxy $group) {
         $group->post('', [Area\CreateController::class, 'handle'])->setName('area.create');
         $group->put('[/{areaId}]', [Area\UpdateController::class, 'handle'])->setName('area.update');
         $group->delete('[/{areaId}]', [Area\DeleteController::class, 'handle'])->setName('area.delete');
+
+        $group->get('/{areaId}/analytics', [Area\AnalyticsController::class, 'handle'])->setName('area.analytics');
     });
 
     $group->group('/animals/types', function (RouteCollectorProxy $group) {
@@ -106,6 +70,7 @@ $app->group('', function (RouteCollectorProxy $group) {
     });
 
     $group->group('/locations', function (RouteCollectorProxy $group) {
+        $group->get('/geohash[{version}]', [Location\GeoHashController::class, 'handle'])->setName('location.geohash');
         $group->get('[/{pointId}]', [Location\GetController::class, 'handle'])->setName('location.get');
         $group->post('', [Location\CreateController::class, 'handle'])->setName('location.create');
         $group->put('[/{pointId}]', [Location\UpdateController::class, 'handle'])->setName('location.update');

@@ -2,22 +2,19 @@
 
 namespace Api\Controllers\Api\Animal;
 
+use Api\Core\Factories\ResponseFactory;
 use Api\Core\Http\BaseController;
 use Api\Core\Models\Account;
 use Api\Core\Models\Animal;
 use Api\Core\Models\AnimalLocation;
+use Api\Core\Models\Location;
 use Api\Core\Services\Authorization;
 use Api\Core\Services\Formatters\AnimalFormatter;
 use Api\Core\Services\Formatters\DateFormatter;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Api\Core\Factories\ResponseFactory;
-use Api\Core\Models\Location;
-use Api\Core\Models\Type;
-use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
-use Api\Core\Validation\Constraints as OwnAssert;
 
 class UpdateController extends BaseController
 {

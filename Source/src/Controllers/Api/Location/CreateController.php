@@ -4,13 +4,13 @@ namespace Api\Controllers\Api\Location;
 
 use Api\Core\Factories\ResponseFactory;
 use Api\Core\Http\BaseController;
+use Api\Core\Models\Location;
 use Api\Core\Services\Formatters\LocationFormatter;
 use Api\Core\Services\LocationJSONfixer;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Symfony\Component\Validator\Constraints as Assert;
-use Api\Core\Models\Location;
 
 class CreateController extends BaseController
 {

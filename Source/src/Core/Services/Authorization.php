@@ -4,10 +4,10 @@ namespace Api\Core\Services;
 
 use Api\Core\Factories\ResponseFactory;
 use Api\Core\Models\Account;
+use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Fig\Http\Message\StatusCodeInterface;
 
 class Authorization
 {

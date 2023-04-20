@@ -2,9 +2,9 @@
 
 namespace Api\Core\Factories;
 
-use Slim\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
 use Fig\Http\Message\StatusCodeInterface;
+use Psr\Http\Message\ResponseInterface;
+use Slim\Psr7\Response;
 
 class ResponseFactory
 {

@@ -7,11 +7,11 @@ use Api\Core\Http\BaseController;
 use Api\Core\Models\Account;
 use Api\Core\Models\Role;
 use Api\Core\Services\Formatters\AccountFormatter;
+use Api\Core\Validation\Constraints as OwnAssert;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Symfony\Component\Validator\Constraints as Assert;
-use Api\Core\Validation\Constraints as OwnAssert;
 
 class RegisterController extends BaseController
 {

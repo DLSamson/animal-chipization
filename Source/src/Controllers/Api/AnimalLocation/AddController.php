@@ -2,9 +2,11 @@
 
 namespace Api\Controllers\Api\AnimalLocation;
 
+use Api\Core\Factories\ResponseFactory;
 use Api\Core\Http\BaseController;
 use Api\Core\Models\Animal;
 use Api\Core\Models\AnimalLocation;
+use Api\Core\Models\Location;
 use Api\Core\Services\Authorization;
 use Api\Core\Services\Formatters\AnimalLocationFormatter;
 use Api\Core\Services\Formatters\DateFormatter;
@@ -12,8 +14,6 @@ use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Api\Core\Factories\ResponseFactory;
-use Api\Core\Models\Location;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddController extends BaseController

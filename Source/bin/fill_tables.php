@@ -4,7 +4,6 @@ error_reporting(E_ALL);
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/config/bootstrap.php';
 
-use Api\Core\Models\Role;
 use Api\Core\Models\Account;
 
 $json = '[{

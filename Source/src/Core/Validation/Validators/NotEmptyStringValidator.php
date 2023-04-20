@@ -8,9 +8,11 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
-class NotEmptyStringValidator extends ConstraintValidator {
+class NotEmptyStringValidator extends ConstraintValidator
+{
 
-    public function validate($value, Constraint $constraint) {
+    public function validate($value, Constraint $constraint)
+    {
         if (!$constraint instanceof NotEmptyString) {
             throw new UnexpectedTypeException($constraint, NotEmptyString::class);
         }

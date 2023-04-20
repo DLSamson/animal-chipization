@@ -2,8 +2,6 @@
 
 namespace Api\Core\Models;
 
-use ErrorException;
-use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

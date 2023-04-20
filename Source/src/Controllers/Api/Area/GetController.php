@@ -2,17 +2,14 @@
 
 namespace Api\Controllers\Api\Area;
 
+use Api\Core\Factories\ResponseFactory;
 use Api\Core\Http\BaseController;
 use Api\Core\Models\Area;
-use Api\Core\Services\Authorization;
 use Api\Core\Services\Formatters\AreaFormatter;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Api\Core\Factories\ResponseFactory;
 use Symfony\Component\Validator\Constraints as Assert;
-use Api\Core\Validation\Constraints as OwnAssert;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class GetController extends BaseController
 {

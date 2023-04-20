@@ -110,6 +110,7 @@ Capsule::schema()->dropIfExists('areas');
 //    $table->timestamps();
 //    $table->softDeletes();
 //});
+
 /* Since we cannot use PostGis and I don't want to spend time for searching appropriate libs  */
 Capsule::select('CREATE TABLE areas (
       id SERIAL PRIMARY KEY,

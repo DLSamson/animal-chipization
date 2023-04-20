@@ -5,7 +5,6 @@ namespace Api\Controllers\Api\Account;
 use Api\Core\Factories\ResponseFactory;
 use Api\Core\Http\BaseController;
 use Api\Core\Models\Account;
-use Api\Core\Models\Role;
 use Api\Core\Services\Authorization;
 use Api\Core\Services\Formatters\AccountFormatter;
 use Fig\Http\Message\StatusCodeInterface;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Symfony\Component\Validator\Constraints as Assert;
-use Api\Core\Validation\Constraints as OwnAssert;
 
 class SearchController extends BaseController
 {

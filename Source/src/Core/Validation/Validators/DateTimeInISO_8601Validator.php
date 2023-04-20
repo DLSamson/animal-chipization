@@ -3,7 +3,6 @@
 namespace Api\Core\Validation\Validators;
 
 use Api\Core\Validation\Constraints\DateTimeInISO_8601;
-use Api\Core\Validation\Constraints\NotEmptyString;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;

@@ -3,7 +3,6 @@
 namespace Api\Core\Validation\Constraints;
 
 use Api\Core\Validation\Validators\DateTimeInISO_8601Validator;
-use Api\Core\Validation\Validators\NotEmptyStringValidator;
 use Symfony\Component\Validator\Constraint;
 
 class DateTimeInISO_8601 extends Constraint

@@ -1,16 +1,16 @@
 <?php
 
 use Api\Core\Factories\ResponseFactory;
+use DI\ContainerBuilder;
 use Dotenv\Dotenv;
+use Illuminate\Database\Capsule\Manager as Capsule;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
-use DI\ContainerBuilder;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\ValidatorBuilder;
-use Illuminate\Database\Capsule\Manager as Capsule;
 
 if (!defined('ROOT_PATH'))
     define('ROOT_PATH', dirname(__DIR__));

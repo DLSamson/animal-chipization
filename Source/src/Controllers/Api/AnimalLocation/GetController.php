@@ -2,16 +2,16 @@
 
 namespace Api\Controllers\Api\AnimalLocation;
 
+use Api\Core\Factories\ResponseFactory;
 use Api\Core\Http\BaseController;
 use Api\Core\Models\Animal;
 use Api\Core\Models\AnimalLocation;
 use Api\Core\Services\Formatters\AnimalLocationFormatter;
+use Api\Core\Validation\Constraints as OwnAssert;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Api\Core\Factories\ResponseFactory;
 use Symfony\Component\Validator\Constraints as Assert;
-use Api\Core\Validation\Constraints as OwnAssert;
 
 class GetController extends BaseController
 {

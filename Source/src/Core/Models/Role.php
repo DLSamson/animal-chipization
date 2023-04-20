@@ -2,7 +2,6 @@
 
 namespace Api\Core\Models;
 
-use Api\Core\Models\Account;
 use Illuminate\Database\Query\Builder;
 
 class Role
@@ -10,7 +9,7 @@ class Role
     const ADMIN = 'ADMIN';
     const CHIPPER = 'CHIPPER';
     const USER = 'USER';
-    
+
     const DEFAULT = self::USER;
 
     /**
