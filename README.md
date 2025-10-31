@@ -1,5 +1,6 @@
-# Slim Web API Template
+# Animal Chipization
 
+Этот репозиторий это результат моей работы в международной олимпиаде «IT-Планета 2023» в конкурсе компании SimbirSoft "Прикладное программирование if...else".
 
 ## What's included?
 
