@@ -1,6 +1,6 @@
 # Animal Chipization
 
-Этот репозиторий это результат моей работы в международной олимпиаде «IT-Планета 2023» в конкурсе компании SimbirSoft "Прикладное программирование if...else".
+This repository is the result of my work in the international Olympiad "IT Planet 2023" in the SimbirSoft competition "Applied Programming if...else".
 
 ## What's included?
 
